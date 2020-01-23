@@ -1,0 +1,23 @@
+﻿<mahControls:MetroWindow x:Class="MyFinances.View.ErrorFieldsDontFilled"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyFinances.View"
+        xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="My Finances" Height="100" Width="230" TitleCharacterCasing="Normal" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/MaterialDegignTEST;component/icons/winicon.jpg">
+    <Grid>
+        
+        <StackPanel Orientation="Horizontal">
+
+            <Label Width="40" Height="40">
+                <Image Source="/icons/error.png" />
+            </Label>
+
+            <TextBlock Text="Не все поля заполнены" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" RenderTransformOrigin="0.501,4.833" FontSize="14" TextDecorations="{x:Null}" FontWeight="Bold"/>
+
+        </StackPanel>
+        
+    </Grid>
+</mahControls:MetroWindow>

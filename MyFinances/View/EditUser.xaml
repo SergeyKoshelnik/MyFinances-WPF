@@ -1,0 +1,50 @@
+﻿<mahControls:MetroWindow x:Class="MyFinances.View.EditUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyFinances.View"
+        xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+         Title="My Finances" Height="500" Width="250" TitleCharacterCasing="Normal" ResizeMode="NoResize"  WindowStartupLocation="CenterScreen" Icon="/MaterialDegignTEST;component/icons/winicon.jpg">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40*" />
+            <RowDefinition Height="39*" />
+            <RowDefinition Height="143*" />
+            <RowDefinition Height="142*" />
+            <RowDefinition Height="108*" />
+        </Grid.RowDefinitions>
+
+        <Label x:Name="lblEditNameUser" Content="Введите имя пользователя" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="14" Height="29" Width="220" FontWeight="Bold"/>
+        <TextBox Name="textBoxEditNameUser" Height="30" Margin="10,5,0,0" Grid.Row="1" TextWrapping="Wrap" Width="220" VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Bold" FontStyle="Italic"/>
+
+
+        <StackPanel Grid.Row="2" Margin="0,1,0,0">
+            <Label x:Name="lblEditPassword" Content="Введите пароль" Margin="10,5,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <PasswordBox Name="passwordBoxEditPassword" Margin="10,5,0,0" Width="220" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" FontStyle="Italic" />
+            <Label x:Name="lblEditPasswordAgain" Content="Повторите пароль" Margin="10,5,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <PasswordBox Name="passwordBoxEditPasswordAgain" Margin="10,5,0,0" Width="220" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        </StackPanel>
+
+
+
+        <StackPanel VerticalAlignment="Center" Grid.Row="2" Height="140" Margin="0,141,0,4" Grid.RowSpan="2">
+            <Label x:Name="lblEditQuestion" Content="Введите контрольный вопрос" Margin="10,5,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <TextBox Name="textBoxEditQuestion" Margin="10,5,0,0" Width="220" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" FontStyle="Italic" />
+            <Label x:Name="lblEditResponse" Content="Введите ответ на вопрос" Margin="10,5,0,0" FontSize="14" FontWeight="Bold" />
+            <TextBox Name="textBoxEditResponse" Margin="10,5,0,0" Width="220" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" FontStyle="Italic" />
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <Button x:Name="btnEditUser" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="40" FontSize="24"  Margin="15,15,0,23" Click="btnEditUser_Click">
+                <Image Source="/icons/check.png" />
+            </Button>
+            <Button x:Name="btnExitEditUser" Width="80" Height="40" FontSize="24" Margin="50,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnExitEditUser_Click">
+                <Image Source="/icons/exit-window.png" />
+            </Button>
+        </StackPanel>
+
+    </Grid>
+</mahControls:MetroWindow>

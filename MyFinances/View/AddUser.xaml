@@ -1,0 +1,50 @@
+﻿<mahControls:MetroWindow x:Class="MyFinances.View.AddUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyFinances.View"
+        xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="My Finances" Height="500" Width="250" TitleCharacterCasing="Normal" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Icon="/MaterialDegignTEST;component/icons/winicon.jpg">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40*" />
+            <RowDefinition Height="42*" />
+            <RowDefinition Height="139*" />
+            <RowDefinition Height="168*" />
+            <RowDefinition Height="83*" />
+        </Grid.RowDefinitions>
+
+        <Label x:Name="lblEnterNameUser" Content="Введите имя пользователя" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="14" Height="29" Width="220" FontWeight="Bold"/>
+        <TextBox Name="textBoxEnterNameUser" Height="30" Margin="10,5,0,0" Grid.Row="1" TextWrapping="Wrap" Width="220" VerticalAlignment="Top" HorizontalAlignment="Left" FontStyle="Italic" FontWeight="Bold"/>
+
+
+        <StackPanel Grid.Row="2">
+            <Label x:Name="lblEnterPassword" Content="Введите пароль" Margin="10,2,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <PasswordBox Name="passwordBoxEnterPassword" Margin="10,5,0,0" Height="30" VerticalAlignment="Top" Width="220" HorizontalAlignment="Left" />
+            <Label x:Name="lblEnterPasswordAgain" Content="Повторите пароль" Margin="10,5,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <PasswordBox Name="passwordBoxEnterPasswordAgain" Margin="10,5,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="220" />
+        </StackPanel>
+
+
+
+        <StackPanel VerticalAlignment="Center" Grid.Row="2" Height="152" Margin="0,138,0,17" Grid.RowSpan="2">
+            <Label x:Name="lblEnterQuestion" Content="Введите контрольный вопрос" Margin="10,0,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <TextBox Name="textBoxEnterQuestion" Margin="10,5,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="220" FontStyle="Italic" FontWeight="Bold" />
+            <Label x:Name="lblEnterResponse" Content="Введите ответ на вопрос" Margin="10,5,0,0" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" />
+            <TextBox Name="textBoxEnterResponse" Margin="10,5,0,0" Height="30" VerticalAlignment="Top" Width="220" HorizontalAlignment="Left" FontStyle="Italic" FontWeight="Bold" />
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <Button x:Name="btnEnterAddUser" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="40" FontSize="24" Margin="15,0,0,23" Click="btnEnterAddUser_Click">
+                <Image Source="/icons/check.png" />
+            </Button>
+            <Button x:Name="btnExitAddUser" Width="80" Height="40" FontSize="24" Margin="50,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnExitAddUser_Click">
+                <Image Source="/icons/exit-window.png" />
+            </Button>
+        </StackPanel>
+
+    </Grid>
+</mahControls:MetroWindow>
