@@ -2,20 +2,11 @@
 using MyFinances.Models;
 using MyFinances.View;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 
 namespace MyFinances
@@ -38,7 +29,7 @@ namespace MyFinances
 
         private void Window_Activated(object sender, EventArgs e)
         {
-            // Обновление/Заполнение combobox при активации MainWindow
+            // Update / Fill combobox when MainWindow is activated
 
             Functions.UpdateComboBox(comboBoxUsers);
         }
@@ -52,30 +43,39 @@ namespace MyFinances
 
         private void btnApplyUser_Click(object sender, RoutedEventArgs e)
         {
-            //Получение пользователя и проверка на соответствие пароля
+            // Getting a user and checking for a password
 
-            using (ApplicationContext db = new ApplicationContext())
+
+            try
             {
-                string tempName = comboBoxUsers.SelectedItem.ToString();
-
-                User user = db.Users.FirstOrDefault(u => u.Username == tempName);
-
-                idUserForPassword = user.Id; // Получение Id пользователя
-
-                if (passwordBoxApplyPassword.Password == user.Password)
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    TabMenu tabMenu = new TabMenu(idUserForPassword);
-                    tabMenu.Show();
-                    tabMenu.ShowInTaskbar = false;
-                }
-                else
-                {
-                    passwordBoxApplyPassword.Clear();
-                    ErrorPassword errorPassword = new ErrorPassword(idUserForPassword);
-                    errorPassword.ShowDialog();
-                    errorPassword.ShowInTaskbar = false;
+                    string tempName = comboBoxUsers.SelectedItem.ToString();
 
+                    User user = db.Users.FirstOrDefault(u => u.Username == tempName);
+
+                    idUserForPassword = user.Id; // Getting User Id
+
+                    if (passwordBoxApplyPassword.Password == user.Password)
+                    {
+                        TabMenu tabMenu = new TabMenu(idUserForPassword);
+                        tabMenu.Show();
+                        tabMenu.ShowInTaskbar = false;
+                    }
+                    else
+                    {
+                        passwordBoxApplyPassword.Clear();
+                        ErrorPassword errorPassword = new ErrorPassword(idUserForPassword);
+                        errorPassword.ShowDialog();
+                        errorPassword.ShowInTaskbar = false;
+
+                    }
                 }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -84,7 +84,7 @@ namespace MyFinances
             this.Close();
         }
 
-        // Вопрос-подтверждение на выход из приложения
+        // Question-confirmation to exit the application
 
         protected override async void OnClosing(CancelEventArgs e)
         {

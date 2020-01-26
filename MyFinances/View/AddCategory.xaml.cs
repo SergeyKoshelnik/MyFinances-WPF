@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -28,19 +16,27 @@ namespace MyFinances.View
 
         private void btnOKEnterCategory_Click(object sender, RoutedEventArgs e)
         {
-            // Добавление новой категории
+            // Adding a new category
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-
-
-                db.Categories.Add(new Category
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    CategoryName = textBoxEnterCategory.Text
-                });
 
-                db.SaveChanges();
 
+                    db.Categories.Add(new Category
+                    {
+                        CategoryName = textBoxEnterCategory.Text
+                    });
+
+                    db.SaveChanges();
+
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

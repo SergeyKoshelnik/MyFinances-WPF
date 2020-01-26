@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:MyFinances"
         xmlns:localhelpers="clr-namespace:MyFinances.Helpers"
         xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:controlzEx="clr-namespace:ControlzEx;assembly=MaterialDesignThemes.Wpf"
         mc:Ignorable="d" x:Name="MetroWindow"
@@ -52,7 +51,7 @@
             <Image Source="icons/users.png" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Button>
 
-        <!-- Всплывающее окно для ввода имени пользователя и пароля -->
+        <!-- Username and password Popup -->
 
         <materialDesign:DialogHost x:Name="DialogHost" DialogMargin="0,20,0,0" Grid.ColumnSpan="2" Grid.Row="1">
             <materialDesign:DialogHost.PopupStyle>
@@ -88,7 +87,7 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
 
-            <!-- Кнопка, которая вызывает всплывающее окно ввода данных -->
+            <!-- Button that Pops up data entry -->
 
             <Button x:Name="btnEnterUser"
                         HorizontalAlignment="Center" Margin="0,30,0,0"  VerticalAlignment="Top"
@@ -113,7 +112,7 @@
         </Button>
 
 
-        <!-- Выплывающее окно слева, в котором располагаются цветовые темы -->
+        <!-- A Popup window to the left that contains color themes -->
 
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding DrawerOpen}" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="4">
             <materialDesign:DrawerHost.LeftDrawerContent>
@@ -162,19 +161,11 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <!-- Кнопка для закрытия выплывающего окна с темами -->
-
-                    <!--<Button Width="14" Height="14" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" HorizontalAlignment="Left" Margin="0,5,0,0">
-                        <StackPanel>
-                            <Rectangle  RadiusY="100" RadiusX="100"/>
-                        </StackPanel>
-                    </Button>-->
-
                 </StackPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
 
 
-            <!-- Кнопка для открытия выплывающего окна с темами -->
+            <!-- Button for opening a Popup window with themes -->
 
             <DockPanel RenderTransformOrigin="0.528,1.966">
 

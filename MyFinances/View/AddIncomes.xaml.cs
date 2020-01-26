@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -34,7 +24,7 @@ namespace MyFinances.View
             string formattedDate;
             double tempsumm;
 
-            // Форматируем дату
+            // Format date
 
             DateTime? tempdate = datePickerIncomes.SelectedDate;
             if (tempdate.HasValue)
@@ -43,7 +33,7 @@ namespace MyFinances.View
             }
             else formattedDate = "";
 
-            // Форматируем сумму
+            // Format the amount
 
             if (textBoxEnterSumm.Text == "")
             {
@@ -51,25 +41,33 @@ namespace MyFinances.View
             }
             else tempsumm = Convert.ToDouble(textBoxEnterSumm.Text);
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-
-                db.Transactions.Add(new Transaction
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    CommentforCategory = textBoxEnterComment.Text,
-                    DateTimeTransaction = formattedDate,
-                    Income = tempsumm,
-                    UserId = _idUserForIncomes,
-                });
+
+                    db.Transactions.Add(new Transaction
+                    {
+                        CommentforCategory = textBoxEnterComment.Text,
+                        DateTimeTransaction = formattedDate,
+                        Income = tempsumm,
+                        UserId = _idUserForIncomes,
+                    });
 
 
-                // Обновляем баланс Пользователя
+                    // Updating User balance
 
-                User user = db.Users.FirstOrDefault(u => u.Id == _idUserForIncomes);
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idUserForIncomes);
 
-                user.Balance += tempsumm;
+                    user.Balance += tempsumm;
 
-                db.SaveChanges();
+                    db.SaveChanges();
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

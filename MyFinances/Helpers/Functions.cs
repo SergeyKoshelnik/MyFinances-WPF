@@ -1,30 +1,42 @@
 ﻿using MyFinances.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace MyFinances.Helpers
 {
+    // Functions for updating DataGrids and ComboBoxes
+
     static class Functions
     {
         internal static DataGrid UpdateDataGrid(DataGrid dt)
         {
-            using (ApplicationContext db = new ApplicationContext())
+
+            try
             {
-                List<User> listUsers = new List<User>();
-
-                foreach (var item in db.Users)
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    listUsers.Add(item);
-                }
+                    List<User> listUsers = new List<User>();
 
-                dt.ItemsSource = null;
-                dt.ItemsSource = listUsers;
+                    foreach (var item in db.Users)
+                    {
+                        listUsers.Add(item);
+                    }
+
+                    dt.ItemsSource = null;
+                    dt.ItemsSource = listUsers;
+                }
+                
             }
+            
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             return dt;
+
         }
 
         internal static DataGrid UpdateDataGridsTabMenu(DataGrid dt, User us)
@@ -42,58 +54,66 @@ namespace MyFinances.Helpers
                 List<Transaction> transactions = new List<Transaction>();
                 List<Category> categories = new List<Category>();
 
-                // Создание общего листа для двух таблиц
+                // Create a common sheet for two tables
 
                 List<TransactionsPlusCategory> trPluscat = new List<TransactionsPlusCategory>();
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-
-                    // Коллекция для выборки расходов Пользователя по полученныму UserId
-
-                    List<Transaction> tempTransactions = new List<Transaction>();
-
-                    foreach (var item in db.Transactions)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        if (item.UserId == _idUserForDataGridCosts)
+
+                        // A collection for selecting the expenses of the User on the received UserId
+
+                        List<Transaction> tempTransactions = new List<Transaction>();
+
+                        foreach (var item in db.Transactions)
                         {
-                            if (item.Income == 0.0)
+                            if (item.UserId == _idUserForDataGridCosts)
                             {
-                                tempTransactions.Add(item);
+                                if (item.Income == 0.0)
+                                {
+                                    tempTransactions.Add(item);
+                                }
+
                             }
-
                         }
+
+                        foreach (var item in tempTransactions)
+                        {
+                            // Filling the collection to add costs to the DataGrid
+
+                            transactions.Add(item);
+
+                            tempDateTimeTransaction = item.DateTimeTransaction;
+                            tempCost = item.Cost;
+                            tempIncome = item.Income;
+                            tempCommentforCategory = item.CommentforCategory;
+
+                            category = db.Categories.FirstOrDefault(c => c.Id == item.CategoryId);
+                            categories.Add(category);
+
+                            tempCategoryName = category.CategoryName;
+
+                            TransactionsPlusCategory transactionsPlusCategory =
+                            new TransactionsPlusCategory(
+                            tempDateTimeTransaction,
+                            tempCost,
+                            tempIncome,
+                            tempCategoryName,
+                            tempCommentforCategory
+                            );
+
+                            trPluscat.Add(transactionsPlusCategory);
+                        }
+                        dt.ItemsSource = null;
+                        dt.ItemsSource = trPluscat;
                     }
+                }
 
-                    foreach (var item in tempTransactions)
-                    {
-                        // Заполнение коллекции для добавления в DataGrid расходов
-
-                        transactions.Add(item);
-
-                        tempDateTimeTransaction = item.DateTimeTransaction;
-                        tempCost = item.Cost;
-                        tempIncome = item.Income;
-                        tempCommentforCategory = item.CommentforCategory;
-
-                        category = db.Categories.FirstOrDefault(c => c.Id == item.CategoryId);
-                        categories.Add(category);
-
-                        tempCategoryName = category.CategoryName;
-
-                        TransactionsPlusCategory transactionsPlusCategory =
-                        new TransactionsPlusCategory(
-                        tempDateTimeTransaction,
-                        tempCost,
-                        tempIncome,
-                        tempCategoryName,
-                        tempCommentforCategory
-                        );
-
-                        trPluscat.Add(transactionsPlusCategory);
-                    }
-                    dt.ItemsSource = null;
-                    dt.ItemsSource = trPluscat;
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 
@@ -108,49 +128,56 @@ namespace MyFinances.Helpers
 
                 List<Transaction> transactions = new List<Transaction>();
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-
-                    // Коллекция для выборки расходов Пользователя по полученныму UserId
-
-                    List<Transaction> tempTransactions = new List<Transaction>();
-
-                    foreach (var item in db.Transactions)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        if (item.UserId == _idUserForDataGridIncomes)
+
+                        // A collection for selecting the expenses of the User on the received UserId
+
+                        List<Transaction> tempTransactions = new List<Transaction>();
+
+                        foreach (var item in db.Transactions)
                         {
-                            if (item.Cost == 0.0)
+                            if (item.UserId == _idUserForDataGridIncomes)
                             {
-                                tempTransactions.Add(item);
+                                if (item.Cost == 0.0)
+                                {
+                                    tempTransactions.Add(item);
+                                }
+
                             }
+                        }
+
+                        foreach (var item in tempTransactions)
+                        {
+                            // Filling the collection to add costs to the DataGrid
+
+                            transactions.Add(item);
+
+                            tempDateTimeTransaction = item.DateTimeTransaction;
+                            tempCost = item.Cost;
+                            tempIncome = item.Income;
+                            tempCommentforCategory = item.CommentforCategory;
+
+                            TransactionsPlusCategory transactionsPlusCategory =
+                            new TransactionsPlusCategory(
+                            tempDateTimeTransaction,
+                            tempCost,
+                            tempIncome,
+                            tempCategoryName,
+                            tempCommentforCategory
+                            );
 
                         }
+                        dt.ItemsSource = null;
+                        dt.ItemsSource = transactions;
                     }
+                }
 
-                    foreach (var item in tempTransactions)
-                    {
-                        // Заполнение коллекции для добавления в DataGrid расходов
-
-                        transactions.Add(item);
-
-                        tempDateTimeTransaction = item.DateTimeTransaction;
-                        tempCost = item.Cost;
-                        tempIncome = item.Income;
-                        tempCommentforCategory = item.CommentforCategory;
-
-                        TransactionsPlusCategory transactionsPlusCategory =
-                        new TransactionsPlusCategory(
-                        tempDateTimeTransaction,
-                        tempCost,
-                        tempIncome,
-                        tempCategoryName,
-                        tempCommentforCategory
-                        );
-
-                        //trPluscat.Add(transactionsPlusCategory);
-                    }
-                    dt.ItemsSource = null;
-                    dt.ItemsSource = transactions;
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 
@@ -160,23 +187,31 @@ namespace MyFinances.Helpers
 
                 List<Debt> debts = new List<Debt>();
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-
-                    // Коллекция для выборки должников Пользователя по полученныму UserId
-
-                    List<Debt> tempDebts = new List<Debt>();
-
-                    foreach (var item in db.Debts)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        if (item.UserId == _idUserForDataGridDebts)
-                        {
-                            tempDebts.Add(item);
-                        }
-                    }
 
-                    dt.ItemsSource = null;
-                    dt.ItemsSource = tempDebts;
+                        // Collection for the selection of the debtors of the User received UserId
+
+                        List<Debt> tempDebts = new List<Debt>();
+
+                        foreach (var item in db.Debts)
+                        {
+                            if (item.UserId == _idUserForDataGridDebts)
+                            {
+                                tempDebts.Add(item);
+                            }
+                        }
+
+                        dt.ItemsSource = null;
+                        dt.ItemsSource = tempDebts;
+                    }
+                }
+
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 
@@ -186,23 +221,31 @@ namespace MyFinances.Helpers
 
                 List<Accumulation> accumulations = new List<Accumulation>();
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-
-                    // Коллекция для выборки запланированных покупок Пользователя по полученныму UserId
-
-                    List<Accumulation> tempAccumulations = new List<Accumulation>();
-
-                    foreach (var item in db.Accumulations)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        if (item.UserId == _idUserForDataGridAccumulation)
-                        {
-                            tempAccumulations.Add(item);
-                        }
-                    }
 
-                    dt.ItemsSource = null;
-                    dt.ItemsSource = tempAccumulations;
+                        // A collection for sampling the user's planned purchases based on the received UserId
+
+                        List<Accumulation> tempAccumulations = new List<Accumulation>();
+
+                        foreach (var item in db.Accumulations)
+                        {
+                            if (item.UserId == _idUserForDataGridAccumulation)
+                            {
+                                tempAccumulations.Add(item);
+                            }
+                        }
+
+                        dt.ItemsSource = null;
+                        dt.ItemsSource = tempAccumulations;
+                    }
+                }
+
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 
@@ -215,21 +258,29 @@ namespace MyFinances.Helpers
             {
                 cb.Items.Clear();
 
-                // Заполнение combobox
+                // Combobox filling
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-
-                    User user = db.Users.FirstOrDefault();
-
-
-                    cb.SelectedItem = user.Username;
-
-                    foreach (var item in db.Users)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        cb.Items.Add(item.Username);
-                    }
 
+                        User user = db.Users.FirstOrDefault();
+
+
+                        cb.SelectedItem = user.Username;
+
+                        foreach (var item in db.Users)
+                        {
+                            cb.Items.Add(item.Username);
+                        }
+
+                    }
+                }
+
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 
@@ -237,18 +288,26 @@ namespace MyFinances.Helpers
             {
                 cb.Items.Clear();
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-
-                    Category category = db.Categories.FirstOrDefault();
-
-                    cb.SelectedItem = category.CategoryName;
-
-                    foreach (var item in db.Categories)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        cb.Items.Add(item.CategoryName);
-                    }
 
+                        Category category = db.Categories.FirstOrDefault();
+
+                        cb.SelectedItem = category.CategoryName;
+
+                        foreach (var item in db.Categories)
+                        {
+                            cb.Items.Add(item.CategoryName);
+                        }
+
+                    }
+                }
+
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 
@@ -262,19 +321,27 @@ namespace MyFinances.Helpers
                 int tempId = id;
                 cb.Items.Clear();
 
-                // Заполнение combobox
+                // Combobox filling
 
-                using (ApplicationContext db = new ApplicationContext())
+                try
                 {
-                    Accumulation accumulation = db.Accumulations.FirstOrDefault(a => a.UserId == tempId);
-
-                    cb.SelectedItem = accumulation.AccumulationName;
-
-                    foreach (var item in db.Accumulations)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        cb.Items.Add(item.AccumulationName);
-                    }
+                        Accumulation accumulation = db.Accumulations.FirstOrDefault(a => a.UserId == tempId);
 
+                        cb.SelectedItem = accumulation.AccumulationName;
+
+                        foreach (var item in db.Accumulations)
+                        {
+                            cb.Items.Add(item.AccumulationName);
+                        }
+
+                    }
+                }
+
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
 

@@ -5,17 +5,8 @@ using MyFinances.Helpers;
 using MyFinances.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MyFinances.View
 {
@@ -61,114 +52,123 @@ namespace MyFinances.View
 
         private void dtPicker2_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            List<Transaction> transactions;
-            _selectedDate2 = dtPicker2.SelectedDate;
-            dtPicker1.DisplayDate = (DateTime)_selectedDate2;
-            dtPicker1.DisplayDateStart = _selectedDate2;
-
-            // Форматирование осей
-
-            var dayConfig = Mappers.Xy<DateModel>()
-                .X(dateModel => dateModel.DateTime.Ticks / (TimeSpan.FromDays(1).Ticks * 30.44))
-                .Y(dateModel => dateModel.Value);
-
-            Formatter = value => new DateTime((long)(value * TimeSpan.FromDays(1).Ticks * 30.44)).ToString("M");
-
-            // Получение расходов или доходов Пользователя в зависимости от вкладки с которой
-            // произошел вызов
-
-            if (flagCost == true)
+            try
             {
-                using (ApplicationContext db = new ApplicationContext())
-                {
-                    transactions = new List<Transaction>();
+                List<Transaction> transactions;
+                _selectedDate2 = dtPicker2.SelectedDate;
+                dtPicker1.DisplayDate = (DateTime)_selectedDate2;
+                dtPicker1.DisplayDateStart = _selectedDate2;
 
-                    foreach (var item in db.Transactions)
+                // Axis Formatting
+
+                var dayConfig = Mappers.Xy<DateModel>()
+                    .X(dateModel => dateModel.DateTime.Ticks / (TimeSpan.FromDays(1).Ticks * 30.44))
+                    .Y(dateModel => dateModel.Value);
+
+                Formatter = value => new DateTime((long)(value * TimeSpan.FromDays(1).Ticks * 30.44)).ToString("M");
+
+                // Receiving expenses or income of the User,
+                // depending on the tab with which the call occurred
+
+                if (flagCost == true)
+                {
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        if (item.UserId == _idUserForAnalytics && item.Cost > 0.0)
+                        transactions = new List<Transaction>();
+
+                        foreach (var item in db.Transactions)
                         {
-                            transactions.Add(item);
+                            if (item.UserId == _idUserForAnalytics && item.Cost > 0.0)
+                            {
+                                transactions.Add(item);
+                            }
+                        }
+
+                    }
+
+                    MySeriesCollection = new SeriesCollection(dayConfig);
+                    LineSeries ln = new LineSeries();
+                    ChartValues<DateModel> chartModels = new ChartValues<DateModel>();
+
+                    DateTime tempDate;
+
+                    // A selection of expenses that are included in a given period
+
+                    foreach (var item in transactions)
+                    {
+                        tempDate = Convert.ToDateTime(item.DateTimeTransaction);
+
+                        if (tempDate >= (DateTime)_selectedDate1 && tempDate <= (DateTime)_selectedDate2)
+                        {
+                            chartModels.Add(new DateModel
+                            {
+                                DateTime = tempDate,
+                                Value = item.Cost
+                            });
                         }
                     }
+                    // Create line graph
 
+                    MySeriesCollection.Add(ln);
+                    ln.Values = chartModels;
+
+                    DataContext = this;
                 }
 
-                MySeriesCollection = new SeriesCollection(dayConfig);
-                LineSeries ln = new LineSeries();
-                ChartValues<DateModel> chartModels = new ChartValues<DateModel>();
-
-                DateTime tempDate;
-
-                // Выборка расходов, которые входят в заданный период
-
-                foreach (var item in transactions)
+                if (flagIncome == true)
                 {
-                    tempDate = Convert.ToDateTime(item.DateTimeTransaction);
-
-                    if (tempDate >= (DateTime)_selectedDate1 && tempDate <= (DateTime)_selectedDate2)
+                    using (ApplicationContext db = new ApplicationContext())
                     {
-                        chartModels.Add(new DateModel
+                        transactions = new List<Transaction>();
+
+                        foreach (var item in db.Transactions)
                         {
-                            DateTime = tempDate,
-                            Value = item.Cost
-                        });
+                            if (item.UserId == _idUserForAnalytics && item.Income > 0.0)
+                            {
+                                transactions.Add(item);
+                            }
+                        }
+
                     }
-                }
-                // Создание линии графика
 
-                MySeriesCollection.Add(ln);
-                ln.Values = chartModels;
+                    MySeriesCollection = new SeriesCollection(dayConfig);
+                    LineSeries ln = new LineSeries();
+                    ChartValues<DateModel> chartModels = new ChartValues<DateModel>();
 
-                DataContext = this;
-            }
+                    DateTime tempDate;
 
-            if (flagIncome == true)
-            {
-                using (ApplicationContext db = new ApplicationContext())
-                {
-                    transactions = new List<Transaction>();
+                    // A selection of expenses that are included in a given period
 
-                    foreach (var item in db.Transactions)
+                    foreach (var item in transactions)
                     {
-                        if (item.UserId == _idUserForAnalytics && item.Income > 0.0)
+                        tempDate = Convert.ToDateTime(item.DateTimeTransaction);
+
+                        if (tempDate >= (DateTime)_selectedDate1 && tempDate <= (DateTime)_selectedDate2)
                         {
-                            transactions.Add(item);
+                            chartModels.Add(new DateModel
+                            {
+                                DateTime = tempDate,
+                                Value = item.Income
+                            });
                         }
                     }
+                    // Create line graph
 
+                    MySeriesCollection.Add(ln);
+                    ln.Values = chartModels;
+
+                    DataContext = this;
                 }
 
-                MySeriesCollection = new SeriesCollection(dayConfig);
-                LineSeries ln = new LineSeries();
-                ChartValues<DateModel> chartModels = new ChartValues<DateModel>();
-
-                DateTime tempDate;
-
-                // Выборка расходов, которые входят в заданный период
-
-                foreach (var item in transactions)
-                {
-                    tempDate = Convert.ToDateTime(item.DateTimeTransaction);
-
-                    if (tempDate >= (DateTime)_selectedDate1 && tempDate <= (DateTime)_selectedDate2)
-                    {
-                        chartModels.Add(new DateModel
-                        {
-                            DateTime = tempDate,
-                            Value = item.Income
-                        });
-                    }
-                }
-                // Создание линии графика
-
-                MySeriesCollection.Add(ln);
-                ln.Values = chartModels;
-
-                DataContext = this;
             }
 
-            
+                catch (System.Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
         }
+            
+        
 
-    }
+}
 }

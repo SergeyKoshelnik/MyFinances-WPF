@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -52,7 +42,7 @@ namespace MyFinances.View
             double tempsumm;
 
 
-            // Форматируем дату
+            // Format date
 
             DateTime? tempdate = datePickerCosts.SelectedDate;
             if (tempdate.HasValue)
@@ -61,7 +51,7 @@ namespace MyFinances.View
             }
             else formattedDate = "";
 
-            // Форматируем сумму
+            // Format the amount
 
             if (textBoxEnterSumm.Text == "")
             {
@@ -69,28 +59,36 @@ namespace MyFinances.View
             }
             else tempsumm = Convert.ToDouble(textBoxEnterSumm.Text);
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                Category category = db.Categories.FirstOrDefault(c => c.CategoryName == tempCategory);
-                _idCategoryForTransaction = category.Id; // Получение Id категории
-
-                db.Transactions.Add(new Transaction
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    CommentforCategory = textBoxEnterComment.Text,
-                    DateTimeTransaction = formattedDate,
-                    Cost = tempsumm,
-                    UserId = _idUserForCosts,
-                    CategoryId = _idCategoryForTransaction
-                });
+                    Category category = db.Categories.FirstOrDefault(c => c.CategoryName == tempCategory);
+                    _idCategoryForTransaction = category.Id; // Getting Id Categories
+
+                    db.Transactions.Add(new Transaction
+                    {
+                        CommentforCategory = textBoxEnterComment.Text,
+                        DateTimeTransaction = formattedDate,
+                        Cost = tempsumm,
+                        UserId = _idUserForCosts,
+                        CategoryId = _idCategoryForTransaction
+                    });
 
 
-                // Обновляем баланс Пользователя
+                    // Updating User balance
 
-                User user = db.Users.FirstOrDefault(u => u.Id == _idUserForCosts);
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idUserForCosts);
 
-                user.Balance -= tempsumm;
+                    user.Balance -= tempsumm;
 
-                db.SaveChanges();
+                    db.SaveChanges();
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

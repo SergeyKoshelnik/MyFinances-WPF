@@ -1,21 +1,4 @@
 ﻿
-FH:\MyFinances\MyFinances\App.xaml;;
-FH:\MyFinances\MyFinances\MainWindow.xaml;;
-FH:\MyFinances\MyFinances\View\AddAccumulation.xaml;;
-FH:\MyFinances\MyFinances\View\AddCategory.xaml;;
-FH:\MyFinances\MyFinances\View\AddCosts.xaml;;
-FH:\MyFinances\MyFinances\View\AddDebts.xaml;;
-FH:\MyFinances\MyFinances\View\AddIncomes.xaml;;
-FH:\MyFinances\MyFinances\View\AddSummForAccumulation.xaml;;
-FH:\MyFinances\MyFinances\View\AddUser.xaml;;
-FH:\MyFinances\MyFinances\View\Analytics.xaml;;
-FH:\MyFinances\MyFinances\View\EditUser.xaml;;
-FH:\MyFinances\MyFinances\View\EnterQuestion.xaml;;
-FH:\MyFinances\MyFinances\View\ErrorFieldsDontFilled.xaml;;
-FH:\MyFinances\MyFinances\View\ErrorPassword.xaml;;
-FH:\MyFinances\MyFinances\View\ErrorPasswordsDontEqual.xaml;;
-FH:\MyFinances\MyFinances\View\ErrorQuestion.xaml;;
-FH:\MyFinances\MyFinances\View\ManagerUsers.xaml;;
-FH:\MyFinances\MyFinances\View\TabMenu.xaml;;
-FH:\MyFinances\MyFinances\View\ViewPassword.xaml;;
+
+FD:\ProgramAcademy\Diploma\MyFinances\MyFinances\MainWindow.xaml;;
 

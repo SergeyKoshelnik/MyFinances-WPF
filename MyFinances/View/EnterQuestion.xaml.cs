@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -28,7 +17,7 @@ namespace MyFinances.View
         {
             InitializeComponent();
 
-            _idUserForQuestion = nameUser; // Получение имя пользователя для проверок
+            _idUserForQuestion = nameUser; // Getting username for checks
 
             Loaded += EnterQuestion_Loaded;
         }
@@ -36,40 +25,56 @@ namespace MyFinances.View
         private void EnterQuestion_Loaded(object sender, RoutedEventArgs e)
         {
 
-            // Выведение в label контрольного вопроса
+            // Display a security question in label
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                User user = db.Users.FirstOrDefault(u => u.Id == _idUserForQuestion);
+                using (ApplicationContext db = new ApplicationContext())
+                {
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idUserForQuestion);
 
-                lblQuestion.Text = "Вопрос: " + user.Question;
+                    lblQuestion.Text = "Вопрос: " + user.Question;
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void btnEnterQuestionOK_Click(object sender, RoutedEventArgs e)
         {
-            // Проверка на правильность ответа на вопрос
+            // Checking the correctness of the answer to the question
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-
-                User user = db.Users.FirstOrDefault(u => u.Id == _idUserForQuestion);
-
-                if (textBoxEnterQuestion.Text == user.Answer)
+                using (ApplicationContext db = new ApplicationContext())
                 {
 
-                    ViewPassword viewPassword = new ViewPassword(user.Password);
-                    viewPassword.ShowDialog();
-                    viewPassword.ShowInTaskbar = false;
-                    this.Close();
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idUserForQuestion);
+
+                    if (textBoxEnterQuestion.Text == user.Answer)
+                    {
+
+                        ViewPassword viewPassword = new ViewPassword(user.Password);
+                        viewPassword.ShowDialog();
+                        viewPassword.ShowInTaskbar = false;
+                        this.Close();
+                    }
+                    else
+                    {
+                        textBoxEnterQuestion.Clear();
+                        ErrorQuestion errorQuestion = new ErrorQuestion();
+                        errorQuestion.ShowDialog();
+                        errorQuestion.ShowInTaskbar = false;
+                    }
                 }
-                else
-                {
-                    textBoxEnterQuestion.Clear();
-                    ErrorQuestion errorQuestion = new ErrorQuestion();
-                    errorQuestion.ShowDialog();
-                    errorQuestion.ShowInTaskbar = false;
-                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 

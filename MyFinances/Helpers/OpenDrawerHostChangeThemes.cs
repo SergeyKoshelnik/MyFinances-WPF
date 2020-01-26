@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyFinances.Helpers
 {
+    // Pop-up field for choosing a color theme
+
     public class OpenDrawerHostChangeThemes : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,18 +1,7 @@
 ﻿using MyFinances.Helpers;
 using MyFinances.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MyFinances.View
 {
@@ -34,7 +23,7 @@ namespace MyFinances.View
             string formattedDate;
             double tempsumm;
 
-            // Форматируем дату
+            // Format date
 
             DateTime? tempdate = datePickerAccumulation.SelectedDate;
             if (tempdate.HasValue)
@@ -43,7 +32,7 @@ namespace MyFinances.View
             }
             else formattedDate = "";
 
-            // Форматируем стоимость
+            // Format the cost
 
             if (textBoxEnterSummAccumulation.Text == "")
             {
@@ -51,22 +40,31 @@ namespace MyFinances.View
             }
             else tempsumm = Convert.ToDouble(textBoxEnterSummAccumulation.Text);
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-
-                db.Accumulations.Add(new Accumulation
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    DateTimeAccumulation = formattedDate,
-                    AccumulationName = textBoxEnterNameAccumulation.Text,
-                    SummofAccumulation = tempsumm,
-                    Contributed = 0.0,
-                    Accumulated = 0.0,
-                    UserId = _idUserForAccumulation
-                });
 
-                db.SaveChanges();
+                    db.Accumulations.Add(new Accumulation
+                    {
+                        DateTimeAccumulation = formattedDate,
+                        AccumulationName = textBoxEnterNameAccumulation.Text,
+                        SummofAccumulation = tempsumm,
+                        Contributed = 0.0,
+                        Accumulated = 0.0,
+                        UserId = _idUserForAccumulation
+                    });
 
+                    db.SaveChanges();
+
+                }
             }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             this.Close();
         }
 

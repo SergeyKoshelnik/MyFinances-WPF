@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -31,12 +22,12 @@ namespace MyFinances.View
 
         private void Window_Activated(object sender, EventArgs e)
         {
-            // Заполнение/Обновление datagrid данными
+            // Filling / Updating a datagrid with Data
 
             Functions.UpdateDataGrid(dataGrid);
         }
 
-        // Удаление колонок кроме имени Пользователя
+        // Removing columns other than the username
         private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             string headerName = e.Column.Header.ToString();
@@ -61,7 +52,7 @@ namespace MyFinances.View
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            // Активация кнопок "Редактировать" и "Удалить" при выбранном пользователе из списка
+            // Activation of the "Edit" and "Delete" buttons with the selected user from the list
 
             if (dataGrid.SelectedItem != null)
             {
@@ -89,22 +80,30 @@ namespace MyFinances.View
         private void btnDeleteUser_Click(object sender, RoutedEventArgs e)
         {
 
-            // Удаление пользователя из списка
+            // Removing a User from the list
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                User temp = dataGrid.SelectedItem as User;
-                _idUserForEdit = temp.Id;
+                using (ApplicationContext db = new ApplicationContext())
+                {
+                    User temp = dataGrid.SelectedItem as User;
+                    _idUserForEdit = temp.Id;
 
-                User user = db.Users.FirstOrDefault(u => u.Id == _idUserForEdit);
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idUserForEdit);
 
-                db.Users.Remove(user);
-                db.SaveChanges();
+                    db.Users.Remove(user);
+                    db.SaveChanges();
 
-                // Обновление datagrid
+                    // Datagrid update
 
-                Functions.UpdateDataGrid(dataGrid);
+                    Functions.UpdateDataGrid(dataGrid);
 
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
 
         }

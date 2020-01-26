@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -34,15 +23,24 @@ namespace MyFinances.View
         private void EditUser_Loaded(object sender, RoutedEventArgs e)
         {
 
-            // Заполнение полей формы изначальными данными пользователя
+            // Filling form fields with initial User data
 
-            using (ApplicationContext db = new ApplicationContext())
+
+            try
             {
-                User user = db.Users.FirstOrDefault(u => u.Id == _idForEdit);
+                using (ApplicationContext db = new ApplicationContext())
+                {
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idForEdit);
 
-                textBoxEditNameUser.Text = user.Username;
-                textBoxEditQuestion.Text = user.Question;
-                textBoxEditResponse.Text = user.Answer;
+                    textBoxEditNameUser.Text = user.Username;
+                    textBoxEditQuestion.Text = user.Question;
+                    textBoxEditResponse.Text = user.Answer;
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
 
         }
@@ -68,21 +66,29 @@ namespace MyFinances.View
                 return;
             }
 
-            // Открываем соединение с базой и выполняем редактирование пользователя
+            // Open a connection to the database and perform user editing
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                User user = db.Users.FirstOrDefault(u => u.Id == _idForEdit);
-
-                if (user != null)
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    user.Username = textBoxEditNameUser.Text;
-                    user.Password = passwordBoxEditPassword.Password;
-                    user.Question = textBoxEditQuestion.Text;
-                    user.Answer = textBoxEditResponse.Text;
+                    User user = db.Users.FirstOrDefault(u => u.Id == _idForEdit);
 
-                    db.SaveChanges();
+                    if (user != null)
+                    {
+                        user.Username = textBoxEditNameUser.Text;
+                        user.Password = passwordBoxEditPassword.Password;
+                        user.Question = textBoxEditQuestion.Text;
+                        user.Answer = textBoxEditResponse.Text;
+
+                        db.SaveChanges();
+                    }
                 }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

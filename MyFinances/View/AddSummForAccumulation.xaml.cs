@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -41,7 +31,7 @@ namespace MyFinances.View
             string tempAccumulationName;
             double tempsumm;
 
-            // Форматируем стоимость
+            // Format the cost
 
             if (textBoxAddSummAccumulation.Text == "")
             {
@@ -49,20 +39,28 @@ namespace MyFinances.View
             }
             else tempsumm = Convert.ToDouble(textBoxAddSummAccumulation.Text);
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                tempAccumulationName = comboBoxEnterNameAccumulation.SelectedItem.ToString();
-                Accumulation accumulation = db.Accumulations.FirstOrDefault(a => a.AccumulationName == tempAccumulationName);
-
-                if (accumulation != null)
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    accumulation.AccumulationName = tempAccumulationName;
-                    accumulation.Contributed = tempsumm;
-                    accumulation.Accumulated += tempsumm;
-                    accumulation.UserId = _idUserForAddSummAccumulation;
+                    tempAccumulationName = comboBoxEnterNameAccumulation.SelectedItem.ToString();
+                    Accumulation accumulation = db.Accumulations.FirstOrDefault(a => a.AccumulationName == tempAccumulationName);
 
-                    db.SaveChanges();
+                    if (accumulation != null)
+                    {
+                        accumulation.AccumulationName = tempAccumulationName;
+                        accumulation.Contributed = tempsumm;
+                        accumulation.Accumulated += tempsumm;
+                        accumulation.UserId = _idUserForAddSummAccumulation;
+
+                        db.SaveChanges();
+                    }
                 }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

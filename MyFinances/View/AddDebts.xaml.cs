@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -34,7 +23,7 @@ namespace MyFinances.View
             string formattedDate;
             double tempsumm;
 
-            // Форматируем дату
+            // Format date
 
             DateTime? tempdate = datePickerDebts.SelectedDate;
             if (tempdate.HasValue)
@@ -43,7 +32,7 @@ namespace MyFinances.View
             }
             else formattedDate = "";
 
-            // Форматируем сумму
+            // Format the amount
 
             if (textBoxEnterSummDebt.Text == "")
             {
@@ -51,19 +40,27 @@ namespace MyFinances.View
             }
             else tempsumm = Convert.ToDouble(textBoxEnterSummDebt.Text);
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-
-                db.Debts.Add(new Debt
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    DebtName = textBoxEnterNameDebt.Text,
-                    SummofDebt = tempsumm,
-                    UserId = _idUserForDebts,
-                    DateEndDate = formattedDate,
-                });
 
-                db.SaveChanges();
+                    db.Debts.Add(new Debt
+                    {
+                        DebtName = textBoxEnterNameDebt.Text,
+                        SummofDebt = tempsumm,
+                        UserId = _idUserForDebts,
+                        DateEndDate = formattedDate,
+                    });
 
+                    db.SaveChanges();
+
+                }
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

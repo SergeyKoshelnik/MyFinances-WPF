@@ -1,22 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using LiveCharts;
-using LiveCharts.Configurations;
-using LiveCharts.Wpf;
 using MyFinances.Helpers;
 using MyFinances.Models;
 
@@ -51,21 +39,24 @@ namespace MyFinances.View
             user = new User();
             Accumulation accumulation = new Accumulation();
 
-            // Получение Id пользователя
+            // Getting User Id
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                user = db.Users.FirstOrDefault(u => u.Id == _idUserForTabMenu);
-                accumulation = db.Accumulations.FirstOrDefault(a => a.UserId == _idUserForTabMenu);
+                using (ApplicationContext db = new ApplicationContext())
+                {
+                    user = db.Users.FirstOrDefault(u => u.Id == _idUserForTabMenu);
+                    accumulation = db.Accumulations.FirstOrDefault(a => a.UserId == _idUserForTabMenu);
 
-                //lblBalanceCosts.Content = null; lblBalanceCosts.Content = null; lblBalanceDebts.Content = null;
-                //lblBalanceCosts.Content = $"Ваш текущий счет: {user.Balance.ToString("f2")} грн";
-                //lblBalanceIncome.Content = $"Ваш текущий счет: {user.Balance.ToString("f2")} грн";
-                //lblBalanceDebts.Content = $"Ваш текущий счет: {user.Balance.ToString("f2")} грн";
-
+                }
             }
 
-            // Обновление DataGrid_а
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            // DataGrid Update
 
             Functions.UpdateDataGridsTabMenu(dataGridCosts, user);
             Functions.UpdateDataGridsTabMenu(dataGridIncomes, user);
@@ -74,7 +65,8 @@ namespace MyFinances.View
 
         }
 
-        // Автогенерация необходимых колонок для вывода доходов
+        // Autogeneration of the necessary columns for the withdrawal of income
+
         private void dataGridCosts_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             string headerName = e.Column.Header.ToString();
@@ -101,7 +93,8 @@ namespace MyFinances.View
 
         }
 
-        // Автогенерация необходимых колонок для вывода расходов
+        // Auto generation of necessary columns for output
+
         private void dataGridIncomes_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             string headerName = e.Column.Header.ToString();
@@ -124,7 +117,8 @@ namespace MyFinances.View
             }
         }
 
-        // Автогенерация необходимых колонок для вывода должников
+        // Autogeneration of the necessary columns for the withdrawal of debtors
+
         private void dataGridDebts_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             string headerName = e.Column.Header.ToString();
@@ -147,7 +141,8 @@ namespace MyFinances.View
             }
         }
 
-        // Автогенерация необходимых колонок для вывода должников
+        // Autogeneration of necessary columns for withdrawal of accumulations
+
         private void dataGridAccumulation_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             string headerName = e.Column.Header.ToString();
@@ -232,34 +227,42 @@ namespace MyFinances.View
 
         private void btnRemoveOperationCost_Click(object sender, RoutedEventArgs e)
         {
-            // Удаление операции из списка "Расходы"
+            // Removing an operation from the Expenses list
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                TransactionsPlusCategory temp = dataGridCosts.SelectedItem as TransactionsPlusCategory;
- 
-                _transactionForRemove = new Transaction();
-
-                foreach (var item in db.Transactions)
+                using (ApplicationContext db = new ApplicationContext())
                 {
-                    
+                    TransactionsPlusCategory temp = dataGridCosts.SelectedItem as TransactionsPlusCategory;
 
-                    if (item.UserId == _idUserForTabMenu &&
-                        item.DateTimeTransaction == temp.DateTimeTransaction &&
-                        item.Cost == temp.Cost &&
-                        item.CommentforCategory == temp.CommentforCategory)
+                    _transactionForRemove = new Transaction();
+
+                    foreach (var item in db.Transactions)
                     {
-                        _transactionForRemove = item;
+
+
+                        if (item.UserId == _idUserForTabMenu &&
+                            item.DateTimeTransaction == temp.DateTimeTransaction &&
+                            item.Cost == temp.Cost &&
+                            item.CommentforCategory == temp.CommentforCategory)
+                        {
+                            _transactionForRemove = item;
+                        }
+
                     }
 
+                    db.Transactions.Remove(_transactionForRemove);
+                    db.SaveChanges();
+
                 }
-
-                db.Transactions.Remove(_transactionForRemove);
-                db.SaveChanges();
-
             }
 
-            // Обновление DataGrid_а
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            // DataGrid Update
 
             Functions.UpdateDataGridsTabMenu(dataGridCosts, user);
         }
@@ -273,35 +276,44 @@ namespace MyFinances.View
 
         private void btnRemoveOperationIncome_Click(object sender, RoutedEventArgs e)
         {
-            // Удаление операции из списка "Доходы"
+            // Delete an operation from the Income list
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                
-                Transaction temp = dataGridIncomes.SelectedItem as Transaction;
- 
-                _transactionForRemove = new Transaction();
-
-                foreach (var item in db.Transactions)
+                using (ApplicationContext db = new ApplicationContext())
                 {
 
+                    Transaction temp = dataGridIncomes.SelectedItem as Transaction;
 
-                    if (item.UserId == _idUserForTabMenu &&
-                        item.DateTimeTransaction == temp.DateTimeTransaction &&
-                        item.Income == temp.Income &&
-                        item.CommentforCategory == temp.CommentforCategory)
+                    _transactionForRemove = new Transaction();
+
+                    foreach (var item in db.Transactions)
                     {
-                        _transactionForRemove = item;
+
+
+                        if (item.UserId == _idUserForTabMenu &&
+                            item.DateTimeTransaction == temp.DateTimeTransaction &&
+                            item.Income == temp.Income &&
+                            item.CommentforCategory == temp.CommentforCategory)
+                        {
+                            _transactionForRemove = item;
+                        }
+
                     }
 
+                    db.Transactions.Remove(_transactionForRemove);
+                    db.SaveChanges();
+
                 }
-
-                db.Transactions.Remove(_transactionForRemove);
-                db.SaveChanges();
-
             }
 
-            // Обновление DataGrid_а
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
+            // DataGrid Update
 
             Functions.UpdateDataGridsTabMenu(dataGridIncomes, user);
         }
@@ -316,34 +328,42 @@ namespace MyFinances.View
 
         private void btnRemoveOperationDebt_Click(object sender, RoutedEventArgs e)
         {
-            // Удаление операции из списка "Долги"
+            // Removing an operation from the Debts list
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                Debt temp = dataGridDebts.SelectedItem as Debt;
-
-                _debtForRemove = new Debt();
-
-                foreach (var item in db.Debts)
+                using (ApplicationContext db = new ApplicationContext())
                 {
+                    Debt temp = dataGridDebts.SelectedItem as Debt;
 
+                    _debtForRemove = new Debt();
 
-                    if (item.UserId == _idUserForTabMenu &&
-                        item.DateEndDate == temp.DateEndDate &&
-                        item.SummofDebt == temp.SummofDebt &&
-                        item.DebtName == temp.DebtName)
+                    foreach (var item in db.Debts)
                     {
-                        _debtForRemove = item;
+
+
+                        if (item.UserId == _idUserForTabMenu &&
+                            item.DateEndDate == temp.DateEndDate &&
+                            item.SummofDebt == temp.SummofDebt &&
+                            item.DebtName == temp.DebtName)
+                        {
+                            _debtForRemove = item;
+                        }
+
                     }
 
+                    db.Debts.Remove(_debtForRemove);
+                    db.SaveChanges();
+
                 }
-
-                db.Debts.Remove(_debtForRemove);
-                db.SaveChanges();
-
             }
 
-            // Обновление DataGrid_а
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            // DataGrid Update
 
             Functions.UpdateDataGridsTabMenu(dataGridDebts, user);
         }
@@ -365,92 +385,140 @@ namespace MyFinances.View
 
         private void btnRemoveAccumulation_Click(object sender, RoutedEventArgs e)
         {
-            // Удаление операции из списка "Накопления"
+            // Removing an operation from the Accumulation list
 
-            using (ApplicationContext db = new ApplicationContext())
+            try
             {
-                Accumulation temp = dataGridAccumulation.SelectedItem as Accumulation;
-
-                _accumulationForRemove = new Accumulation();
-
-                foreach (var item in db.Accumulations)
+                using (ApplicationContext db = new ApplicationContext())
                 {
+                    Accumulation temp = dataGridAccumulation.SelectedItem as Accumulation;
 
+                    _accumulationForRemove = new Accumulation();
 
-                    if (item.UserId == _idUserForTabMenu &&
-                        item.DateTimeAccumulation == temp.DateTimeAccumulation &&
-                        item.SummofAccumulation == temp.SummofAccumulation &&
-                        item.AccumulationName == temp.AccumulationName &&
-                        item.Accumulated == temp.Accumulated)
+                    foreach (var item in db.Accumulations)
                     {
-                        _accumulationForRemove = item;
+
+
+                        if (item.UserId == _idUserForTabMenu &&
+                            item.DateTimeAccumulation == temp.DateTimeAccumulation &&
+                            item.SummofAccumulation == temp.SummofAccumulation &&
+                            item.AccumulationName == temp.AccumulationName &&
+                            item.Accumulated == temp.Accumulated)
+                        {
+                            _accumulationForRemove = item;
+                        }
+
                     }
 
+                    db.Accumulations.Remove(_accumulationForRemove);
+                    db.SaveChanges();
+
                 }
-
-                db.Accumulations.Remove(_accumulationForRemove);
-                db.SaveChanges();
-
             }
 
-            // Обновление DataGrid_а
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            // DataGrid Update
 
             Functions.UpdateDataGridsTabMenu(dataGridAccumulation, user);
         }
 
+        // Export to Excel
 
         private void btnExportToExcelCost_Click(object sender, RoutedEventArgs e)
         {
-            dataGridCosts.SelectAllCells();
-            dataGridCosts.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-            ApplicationCommands.Copy.Execute(null, dataGridCosts);
-            String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-            String result = (string)Clipboard.GetData(DataFormats.Text);
-            dataGridCosts.UnselectAllCells();
-            System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Расходы.xls", true, Encoding.Default);
-            file1.WriteLine(result.Replace(',', ' '));
-            file1.Close();
+            try
+            {
+                dataGridCosts.SelectAllCells();
+                dataGridCosts.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                ApplicationCommands.Copy.Execute(null, dataGridCosts);
+                String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                String result = (string)Clipboard.GetData(DataFormats.Text);
+                dataGridCosts.UnselectAllCells();
+                System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Расходы.xls", true, Encoding.Default);
+                file1.WriteLine(result.Replace(',', ' '));
+                file1.Close();
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+
+        // Export to Excel
 
         private void btnExportToExcelIncome_Click(object sender, RoutedEventArgs e)
         {
-            dataGridIncomes.SelectAllCells();
-            dataGridIncomes.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-            ApplicationCommands.Copy.Execute(null, dataGridIncomes);
-            String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-            String result = (string)Clipboard.GetData(DataFormats.Text);
-            dataGridIncomes.UnselectAllCells();
-            System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Доходы.xls", true, Encoding.Default);
-            file1.WriteLine(result.Replace(',', ' '));
-            file1.Close();
+            try
+            {
+                dataGridIncomes.SelectAllCells();
+                dataGridIncomes.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                ApplicationCommands.Copy.Execute(null, dataGridIncomes);
+                String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                String result = (string)Clipboard.GetData(DataFormats.Text);
+                dataGridIncomes.UnselectAllCells();
+                System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Доходы.xls", true, Encoding.Default);
+                file1.WriteLine(result.Replace(',', ' '));
+                file1.Close();
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+
+        // Export to Excel
 
         private void btnExportToExcelDebt_Click(object sender, RoutedEventArgs e)
         {
-            dataGridDebts.SelectAllCells();
-            dataGridDebts.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-            ApplicationCommands.Copy.Execute(null, dataGridDebts);
-            String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-            String result = (string)Clipboard.GetData(DataFormats.Text);
-            dataGridDebts.UnselectAllCells();
-            System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Долги.xls", true, Encoding.Default);
-            file1.WriteLine(result.Replace(',', ' '));
-            file1.Close();
+            try
+            {
+                dataGridDebts.SelectAllCells();
+                dataGridDebts.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                ApplicationCommands.Copy.Execute(null, dataGridDebts);
+                String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                String result = (string)Clipboard.GetData(DataFormats.Text);
+                dataGridDebts.UnselectAllCells();
+                System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Долги.xls", true, Encoding.Default);
+                file1.WriteLine(result.Replace(',', ' '));
+                file1.Close();
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+
+        // Export to Excel
 
         private void btnExportToExcelAccumulation_Click(object sender, RoutedEventArgs e)
         {
-            dataGridAccumulation.SelectAllCells();
-            dataGridAccumulation.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-            ApplicationCommands.Copy.Execute(null, dataGridAccumulation);
-            String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-            String result = (string)Clipboard.GetData(DataFormats.Text);
-            dataGridAccumulation.UnselectAllCells();
-            System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Накопления.xls", true, Encoding.Default);
-            file1.WriteLine(result.Replace(',', ' '));
-            file1.Close();
+            try
+            {
+                dataGridAccumulation.SelectAllCells();
+                dataGridAccumulation.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                ApplicationCommands.Copy.Execute(null, dataGridAccumulation);
+                String resultat = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                String result = (string)Clipboard.GetData(DataFormats.Text);
+                dataGridAccumulation.UnselectAllCells();
+                System.IO.StreamWriter file1 = new System.IO.StreamWriter(@"..\Накопления.xls", true, Encoding.Default);
+                file1.WriteLine(result.Replace(',', ' '));
+                file1.Close();
+            }
+
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
+        // Opening the statistics window
 
         private void btnOpenAnalyticsCost_Click(object sender, RoutedEventArgs e)
         {
@@ -460,6 +528,8 @@ namespace MyFinances.View
             analytics.ShowInTaskbar = false;
         }
 
+        // Opening the statistics window
+
         private void btnOpenAnalyticsIncome_Click(object sender, RoutedEventArgs e)
         {
             string str = "Income";
@@ -467,6 +537,8 @@ namespace MyFinances.View
             analytics.Show();
             analytics.ShowInTaskbar = false;
         }
+
+        // Call calculator
 
         private void btnOpenCalc_Click(object sender, RoutedEventArgs e)
         {

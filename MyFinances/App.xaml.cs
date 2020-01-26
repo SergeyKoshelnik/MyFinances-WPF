@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -23,8 +17,8 @@ namespace MyFinances
                 DatePicker.LoadedEvent,
                 new RoutedEventHandler(DatePicker_Loaded));
         }
-
-        // Вспомогательный метод для обработчика события по поиску DatePickerTextBox.Watermark
+        // Helper method for search Event Handler DatePickerTextBox.Watermark
+        
         public static T GetChildOfType<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) return null;
@@ -39,7 +33,7 @@ namespace MyFinances
             return null;
         }
 
-        // Изменение Watermark для DatePicker_а
+        // Change Watermark for DatePicker
         private void DatePicker_Loaded(object sender, RoutedEventArgs e)
         {
             var dp = sender as DatePicker;
